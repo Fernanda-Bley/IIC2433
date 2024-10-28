@@ -1,0 +1,29 @@
+# Tarea 4
+
+Cuentas con un set de datos de imágenes en blanco y negro (de 28x28 pixeles) de distintas prendas de vestir (son 10 tipos de prendas en total, mira [aca](https://github.com/zalandoresearch/fashion-mnist)). En esta tarea vas a resolver el problema de crear nuevas imágenes prendas de vestir. Especificamente, la tarea que se te ha encomendado es:
+
+> Elige dos tipos de los 10 tipos de prendas
+>>Para cada uno de esos dos tipos, escribe una función que retorne uno de esos dos tipos, y retorne una nueva imagen de ese tipo, obtenida al azar, que no esté ya en el dataset
+
+La solución a trabajar para escribir esta funcion consta de las siguientes partes
+
+### Parte 1: datos, reducción de dimensionalidad
+
+- Prueba dos formas de reducir a 6 dimensiones: PCA y autoencoders. 
+- Busca 3 imágenes en el dataset. Para esas tres imágenes, compara visualmente lo que ocurre al (1) graficar la imagen original (hay código para eso más abajo) y (2) tomar el vector de la imagen, codificarlo, decodificarlo y volver a graficar (para pca y autoencoder, recuerda estandarizar y luego des-estandarizar, como hicimos en el notebook de compresión de la semana 9). 
+- Sigue afinando tu método de reducción hasta que entregue imágenes que al codificar/decodificar, la imagen nueva resultante todavía guarde alguna semejanza con la realidad. 
+- Una vez que estés satisfecho, transforma todo el dataset con tu método de reducción. Al dataset resultante (ahora con 6 dimensiones) le llamaremos **Xreducido**
+
+### Parte 2: clustering y sampling 
+
+- Ejecuta un algoritmo de clustering GMM sobre **Xreducido**, con 10 clústeres. Averigua como obtener las medias y las covarianzas de los 10 clústeres resultantes. 
+- Usa *np.random.multivariate_normal(mean_vector,covariance_matrix)*, que se usa para obtener un elemento de la normal multivariada con su vector de media *mean_vector* y matriz de covarianzas *covariance_matrix*, para obtener un muestra de cada una de las 10 gaussianas que entrenó tu GMM. Esos muestras son elementos que podrían pertenecer a cada uno de los clústeres detectados por tu GMM. 
+
+### Parte 3: análisis  
+
+- Cada muestra puede ser graficado como imagen: hay que pasarlo por el decodificador (o la transformada inversa en el caso de PCA). 
+- Analiza visualmente dos muestras de cada clase
+- Analiza visualmente la media de cada cluster identificado por GMM
+- Con las visualizaciones de esta parte, responde: ¿qué clústeres parece entregar consistentemente prendas de un tipo en específico? ¿qué prendas son?
+- Entrena un clasificador de randomforest con los datos originales. 
+- Samplea y decodifica 50 ejemplos de cada cluster identificado por GMM, y entrégaselos al randomforest. Ahora ve los resultados de las predicciones. Vé si son consistentes en el sentido de que predicen que una buena cantidad de los ejemplos de los dos clústeres que identificaste son de una prenda en particular. 
